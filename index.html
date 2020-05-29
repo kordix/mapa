@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPY</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="" />
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"></script>
+
+
+        <style>
+            .active{
+                color:red;
+                text-decoration:underline
+            }
+        </style>
+
+</head>
+
+<body>
+    <!-- <img src="https://tinyurl.com/ycqytlw7" alt=""> -->
+
+    <div style="display:flex">
+        <div id="mapid" style="width:600px;height:600px;margin-right:20px"></div>
+        <div id="app">
+            <p><b>Twoje punkty:</b></p>
+
+            <table>
+                <thead>
+                    <td>x</td>
+                    <td>y</td>
+                    <td>index</td>
+                </thead>
+                <tbody>
+                    <tr v-for="(elem,index) in points" :class="{active:elem.index == activepointindex}">
+                        <td>{{elem.x}}</td>
+                        <td>{{elem.y}}</td>
+                        <td>{{elem.index}}</td>
+                        <td> <button @click="remove(index)">Usuń</button> </td>
+                    </tr>
+                </tbody>
+            </table>
+            <label for="">x</label>
+            <input type="text" style="width:50px" v-model="cruddata.x">
+            <label for="">y</label>
+            <input type="text" style="width:50px" v-model="cruddata.y">
+            <label for="">kod miejsca</label>
+            <input type="text" style="width:80px" v-model="cruddata.index">
+            <button @click="add">Dodaj</button>
+            <button @click="save">Zapisz</button>
+
+            <p style="clear:both"></p>  
+
+            <div v-if="Object.keys(activePoint).length">
+                <p style="font-weight:bold">Dodaj zdjęcie do miejsca</p>
+                <input type="text" v-model="phototoadd">
+                <button @click="addPhoto">Zatwierdź</button>
+            </div>
+
+            <div id="galeria" style="display:flex;align-items:center">
+                <div v-for="(elem,index) in activePoint.photos" style="width:300px;padding:10px;border:1px #999 solid;margin:5px;display:flex;align-items:center">
+                    <a :href="elem" target="_blank" style="display:flex"> <img :src="elem" alt="tu będzie obrazek" class="img-fluid"></a>
+                    <button @click="removePhoto(index)" class="btn-sm btn-danger">x</button>
+                </div>
+               
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin=""></script>
+
+    <script>
+        var mymap = L.map('mapid').setView([52, 19.4], 6);
+
+
+
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1Ijoia29yZGl4IiwiYSI6ImNrNXM3YnN6cDBqZmozb211eGwxNjhzZGQifQ.UNDwB32m1pAfiBVBrkW4Qg'
+        }).addTo(mymap);
+
+        function onMapClick(e) {
+            alert("You clicked the map at " + e.latlng);
+        }
+
+        mymap.on('click', onMapClick);
+
+        // let markerobject = L.marker([52, 22])
+        
+        // markerobject.addTo(mymap);
+
+        // markerobject.index = 'dupa';
+
+        // markerobject.on('click', function(){
+        //     console.log('click');
+        // })
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js"></script>
+
+    <script>
+        let app = new Vue({
+            el: '#app',
+            data: {
+                cruddata:{},
+                phototoadd:null,
+                points: [],
+                activepointindex:null,
+                pointsObjects:[],
+                test:null
+            },
+            async mounted() {
+                //await  this.getData();
+                this.getData()
+
+            },
+            methods: {
+                myParse() {
+                    const json = '{"result":true, "count":42}';
+                    const obj = JSON.parse(json);
+                },
+                async getData() {
+                    let self = this;
+                    await fetch('/api/read.php').then((res) => res.json()).then((res) => { self.points = res; console.log(res) })
+                    this.drawPoints();
+                },
+                drawPoints() {
+                    let self = this;
+                    for (let point of this.points) {
+                       let objectl = L.marker([point.x, point.y]).addTo(mymap);
+                       objectl.index = point.index;
+                       
+                        objectl.on('click', function(){
+                           app.activepointindex = objectl.index
+
+                        //    alert(objectl.index)
+
+                        })
+
+                       //this.pointsObjects.push(objectl);
+
+                    }
+                },
+                add(){
+                    this.points.push(this.cruddata)
+                },
+                removePhoto(index){
+                    this.points.find((el)=>el.index == this.activepointindex).photos.splice(index,1);
+                },
+                addPhoto(){
+                    let activePoint = this.points.find((el)=>el.index == this.activepointindex);
+
+                    if(!activePoint.photos){
+                        activePoint.photos = []
+                    }
+
+                    this.points.find((el)=>el.index == this.activepointindex).photos.push(this.phototoadd);
+                },
+                async save(){
+                    let points = JSON.stringify(this.points);
+
+                    await axios.post('api/save.php',{tekst:points});
+
+                    this.getData();
+
+                },
+                remove(index){
+                    this.points.splice(index,1)
+                }
+            },
+            computed:{
+                activePoint(){
+                    let objectl = this.points.find((el)=>el.index == this.activepointindex);
+                    return objectl ? objectl : {};
+                }
+            }
+
+
+        })
+
+    </script>
+
+
+</body>
+
+</html>
