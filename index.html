@@ -61,7 +61,7 @@
                 <button @click="addPhoto">Zatwierdź</button>
             </div>
 
-            <div id="galeria" style="display:flex;align-items:center">
+            <div id="galeria" style="display:flex;align-items:center;flex-wrap:wrap">
                 <div v-for="(elem,index) in activePoint.photos" style="width:300px;padding:10px;border:1px #999 solid;margin:5px;display:flex;align-items:center">
                     <a :href="elem" target="_blank" style="display:flex"> <img :src="elem" alt="tu będzie obrazek" class="img-fluid"></a>
                     <button @click="removePhoto(index)" class="btn-sm btn-danger">x</button>
