@@ -17,6 +17,20 @@
                 color:red;
                 text-decoration:underline
             }
+
+            #kolko {
+                border-radius:5px;
+                width:10px;
+                height:10px;
+                border:1px #999 solid;
+                position:absolute;
+                left:20px;
+                bottom:20px;
+            }
+
+            #kolko:hover{
+                background:red
+            }
         </style>
 
 </head>
@@ -64,15 +78,16 @@
             <div id="galeria" style="display:flex;align-items:center;flex-wrap:wrap">
                 <div v-for="(elem,index) in activePoint.photos" style="width:300px;padding:10px;border:1px #999 solid;margin:5px;display:flex;align-items:center">
                     <a :href="elem" target="_blank" style="display:flex"> <img :src="elem" alt="tu będzie obrazek" class="img-fluid"></a>
-                    <button @click="removePhoto(index)" class="btn-sm btn-danger">x</button>
+                    <button @click="removePhoto(index)" class="btn-sm btn-danger" v-if="deleteMode">x</button>
                 </div>
                
             </div>
 
-
+            <button id="kolko" @click="deleteMode=true"></button>
         </div>
 
     </div>
+    
 </div>
 
 
@@ -125,7 +140,7 @@
                 points: [],
                 activepointindex:null,
                 pointsObjects:[],
-                test:null
+                deleteMode:false
             },
             async mounted() {
                 //await  this.getData();
@@ -133,6 +148,10 @@
 
             },
             methods: {
+                test(){
+                    console.log('sadffddsf');
+                    
+                },
                 myParse() {
                     const json = '{"result":true, "count":42}';
                     const obj = JSON.parse(json);
