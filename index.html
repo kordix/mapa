@@ -111,11 +111,8 @@
             accessToken: 'pk.eyJ1Ijoia29yZGl4IiwiYSI6ImNrNXM3YnN6cDBqZmozb211eGwxNjhzZGQifQ.UNDwB32m1pAfiBVBrkW4Qg'
         }).addTo(mymap);
 
-        function onMapClick(e) {
-            alert("You clicked the map at " + e.latlng);
-        }
 
-        mymap.on('click', onMapClick);
+       // mymap.on('click', onMapClick);
 
         // let markerobject = L.marker([52, 22])
         
@@ -135,7 +132,7 @@
         let app = new Vue({
             el: '#app',
             data: {
-                cruddata:{},
+                cruddata:{x:0,y:0},
                 phototoadd:null,
                 points: [],
                 activepointindex:null,
@@ -145,9 +142,19 @@
             async mounted() {
                 //await  this.getData();
                 this.getData()
+                mymap.on('click', this.onMapClick);
 
             },
             methods: {
+                onMapClick(e) {
+
+                    console.log(e.latlng.lat);
+                    this.cruddata.x = (Math.floor(e.latlng.lat*100))/100;
+                    this.cruddata.y = (Math.floor(e.latlng.lng*100))/100;
+
+                    
+                    alert("You clicked the map at " + e.latlng);
+                },
                 test(){
                     console.log('sadffddsf');
                     
