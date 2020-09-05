@@ -18,7 +18,19 @@
                 text-decoration:underline
             }
 
-            #kolko {
+         
+
+            #kolko:hover{
+                background:red
+            }
+            @media(max-width:800px){
+            .strzalawdol{
+                position:absolute;bottom:50px;right:50px;
+                border-radius:50%;
+                z-index:19999;
+            }
+
+               #kolko {
                 border-radius:5px;
                 width:10px;
                 height:10px;
@@ -26,21 +38,31 @@
                 position:absolute;
                 left:20px;
                 bottom:20px;
+                }
             }
 
-            #kolko:hover{
-                background:red
+            @media(min-width:800px){
+                #kolko {
+                border-radius:5px;
+                width:10px;
+                height:10px;
+                border:1px #999 solid;
+                position:absolute;
+                left:20px;
+                bottom:20px;
+                }
             }
         </style>
 
 </head>
 
 <body>
+    <a href="/#app"><button class="btn btn-primary strzalawdol" href="/#app">Idź na dół</button></a>
     <!-- <img src="https://tinyurl.com/ycqytlw7" alt=""> -->
     <div class="container" style="max-width:1500px">
     <div class="row">
         <div id="mapid" style="width:600px;height:600px;margin-right:20px" class="col-lg-5"></div>
-        <div id="app" class="col-lg-6">
+        <div id="app" class="col-lg-6" >
             <p><b>Twoje punkty:</b></p>
 
             <table>
@@ -54,7 +76,7 @@
                         <td>{{elem.x}}</td>
                         <td>{{elem.y}}</td>
                         <td>{{elem.index}}</td>
-                        <td> <button @click="remove(index)">Usuń</button> </td>
+                        <td> <button @click="remove(index)" v-if="deleteMode">Usuń</button> </td>
                     </tr>
                 </tbody>
             </table>
@@ -76,14 +98,14 @@
             </div>
 
             <div id="galeria" style="display:flex;align-items:center;flex-wrap:wrap">
-                <div v-for="(elem,index) in activePoint.photos" style="width:300px;padding:10px;border:1px #999 solid;margin:5px;display:flex;align-items:center">
+                <div v-for="(elem,index) in activePoint.photos"  style="width:300px;padding:10px;border:1px #999 solid;margin:5px;display:flex;align-items:center">
                     <a :href="elem" target="_blank" style="display:flex"> <img :src="elem" alt="tu będzie obrazek" class="img-fluid"></a>
-                    <button @click="removePhoto(index)" class="btn-sm btn-danger" v-if="deleteMode">x</button>
+                    <button @click="removePhoto(index)" class="btn-sm btn-danger"  v-if="deleteMode">x</button>
                 </div>
                
             </div>
 
-            <button id="kolko" @click="deleteMode=true"></button>
+            <button id="kolko" @click="deleteMode=!deleteMode"></button>
         </div>
 
     </div>
