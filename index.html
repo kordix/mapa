@@ -57,6 +57,18 @@
                 border-radius: 50%;
                 z-index: 19999;
                 opacity:0.6;
+                  -webkit-backface-visibility: hidden;
+            }
+
+            .mnav2 {
+                /* display:fixed; */
+                position: fixed;
+                bottom: 50px;
+                right: 50px;
+                border-radius: 50%;
+                z-index: 19999;
+                opacity:0.6;
+                  -webkit-backface-visibility: hidden;
             }
 
             #kolko {
@@ -76,7 +88,7 @@
                 bottom: 20px;
             }
 
-            .mnav{
+            .mnav,.mnav2{
                 display:none;
             }
         }
@@ -92,6 +104,13 @@
             <div id="mapid" style="width:600px;height:600px;margin-right:20px" class="col-lg-5"></div>
             <div id="app" class="col-lg-6">
                 <div class="mnav">
+                    <a href="/#mapid"><button class="btn btn-primary">Mapa</button></a>
+                    <a href="/#app"><button class="btn btn-primary">Miejsca</button></a>
+                    <a href="/#galeria" v-if="activepointindex"><button class="btn btn-primary">Galeria</button></a>
+                
+                </div>
+
+                <div class="mnav2">
                     <a href="/#mapid"><button class="btn btn-primary">Mapa</button></a>
                     <a href="/#app"><button class="btn btn-primary">Miejsca</button></a>
                     <a href="/#galeria" v-if="activepointindex"><button class="btn btn-primary">Galeria</button></a>
