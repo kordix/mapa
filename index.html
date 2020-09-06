@@ -49,8 +49,9 @@
         }
 
         @media(max-width:800px) {
-            .strzalawdol {
-                position: absolute;
+            .mnav {
+                /* display:fixed; */
+                position: fixed;
                 bottom: 50px;
                 right: 50px;
                 border-radius: 50%;
@@ -73,18 +74,28 @@
                 left: 20px;
                 bottom: 20px;
             }
+
+            .mnav{
+                display:none;
+            }
         }
     </style>
 
 </head>
 
 <body>
-    <a href="/#app"><button class="btn btn-primary strzalawdol" href="/#app">Idź na dół</button></a>
+  
     <!-- <img src="https://tinyurl.com/ycqytlw7" alt=""> -->
     <div class="container" style="max-width:1500px">
         <div class="row">
             <div id="mapid" style="width:600px;height:600px;margin-right:20px" class="col-lg-5"></div>
             <div id="app" class="col-lg-6">
+                <div class="mnav">
+                    <a href="/#mapid"><button class="btn btn-primary">Mapa</button></a>
+                    <a href="/#app"><button class="btn btn-primary">Miejsca</button></a>
+                    <a href="/#galeria" v-if="activepointindex"><button class="btn btn-primary">Galeria</button></a>
+                
+                </div>
                 <p><b>Twoje punkty:</b></p>
 
                 <table style="">
@@ -119,7 +130,7 @@
                     <button @click="addPhoto">Zatwierdź</button>
                 </div>
 
-                <div id="galeria" style="display:flex;align-items:center;flex-wrap:wrap">
+                <div id="galeria" style="display:flex;align-items:center;flex-wrap:wrap" id="galeria">
                     <div v-for="(elem,index) in activePoint.photos"
                         style="width:300px;padding:10px;border:1px #999 solid;margin:5px;display:flex;align-items:center">
                         <a :href="elem" target="_blank" style="display:flex"> <img :src="elem" alt="tu będzie obrazek"
