@@ -172,8 +172,8 @@
                 onMapClick(e) {
 
                     console.log(e.latlng.lat);
-                    this.cruddata.x = (Math.floor(e.latlng.lat * 100)) / 100;
-                    this.cruddata.y = (Math.floor(e.latlng.lng * 100)) / 100;
+                    this.cruddata.x = e.latlng.lat;
+                    this.cruddata.y = e.latlng.lng;
 
 
                     alert("You clicked the map at " + e.latlng);
