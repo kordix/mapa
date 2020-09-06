@@ -263,7 +263,8 @@
                     }
                 },
                 add() {
-                    this.points.push(this.cruddata)
+                    this.points.push(this.cruddata);
+                    this.save();
                 },
                 removePhoto(index) {
                     this.points.find((el) => el.index == this.activepointindex).photos.splice(index, 1);
@@ -276,6 +277,7 @@
                     }
 
                     this.points.find((el) => el.index == this.activepointindex).photos.push(this.phototoadd);
+                    this.save();
                 },
                 async save() {
                     let points = JSON.stringify(this.points);
