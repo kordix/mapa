@@ -27,7 +27,7 @@
 
         table {
             /* width: 100%; */
-           
+
         }
 
         thead {
@@ -37,15 +37,15 @@
         }
 
         tbody {
-            width:400px;
-             display: block;
-             height: 400px;
-              overflow: auto;
-           
+            width: 400px;
+            display: block;
+            height: 400px;
+            overflow: auto;
+
         }
 
-        td{
-            width:50px
+        td {
+            width: 50px
         }
 
         @media(max-width:800px) {
@@ -56,8 +56,8 @@
                 right: 50px;
                 border-radius: 50%;
                 z-index: 19999;
-                opacity:0.6;
-                  -webkit-backface-visibility: hidden;
+                opacity: 0.6;
+                -webkit-backface-visibility: hidden;
             }
 
             .mnav2 {
@@ -67,13 +67,29 @@
                 right: 50px;
                 border-radius: 50%;
                 z-index: 19999;
-                opacity:0.6;
-                  -webkit-backface-visibility: hidden;
+                opacity: 0.6;
+                -webkit-backface-visibility: hidden;
             }
 
             #kolko {
                 display: none !important;
             }
+        }
+
+        .myheader {
+            position: fixed;
+            right: 0;
+            left: 0;
+            top: 0;
+            /* padding-top: 20px; */
+            /* padding-bottom: 20px; */
+            background-color: #fff;
+            box-shadow: 0 1px 1px 0 #f0f0f0;
+            z-index: 999;
+            animation-name: fadeInDown;
+            animation-duration: 0.25s;
+            height: 50px;
+            border: 1px red solid;
         }
 
         @media(min-width:800px) {
@@ -88,8 +104,9 @@
                 bottom: 20px;
             }
 
-            .mnav,.mnav2{
-                display:none;
+            .mnav,
+            .mnav2 {
+                display: none;
             }
         }
     </style>
@@ -97,25 +114,29 @@
 </head>
 
 <body>
-  
+
     <!-- <img src="https://tinyurl.com/ycqytlw7" alt=""> -->
+    <div class="myheader">
+        <!-- <div class="mnav"> -->
+            <a href="/#mapid"><button class="btn btn-primary">Mapa</button></a>
+            <a href="/#app"><button class="btn btn-primary">Miejsca</button></a>
+            <a href="/#galeria" v-if="activepointindex"><button class="btn btn-primary">Galeria</button></a>
+
+        <!-- </div> -->
+
+
+    </div>
     <div class="container" style="max-width:1500px">
         <div class="row">
             <div id="mapid" style="width:600px;height:600px;margin-right:20px" class="col-lg-5"></div>
             <div id="app" class="col-lg-6">
-                <div class="mnav">
-                    <a href="/#mapid"><button class="btn btn-primary">Mapa</button></a>
-                    <a href="/#app"><button class="btn btn-primary">Miejsca</button></a>
-                    <a href="/#galeria" v-if="activepointindex"><button class="btn btn-primary">Galeria</button></a>
-                
-                </div>
 
-                <div class="mnav2">
+                <!-- <div class="mnav2">
                     <a href="/#mapid"><button class="btn btn-primary">Mapa</button></a>
                     <a href="/#app"><button class="btn btn-primary">Miejsca</button></a>
                     <a href="/#galeria" v-if="activepointindex"><button class="btn btn-primary">Galeria</button></a>
-                
-                </div>
+
+                </div> -->
                 <p><b>Twoje punkty:</b></p>
 
                 <table style="margin-bottom:20px">
@@ -176,6 +197,8 @@
 
     <script>
         var mymap = L.map('mapid').setView([52, 19.4], 6);
+
+
 
 
 
