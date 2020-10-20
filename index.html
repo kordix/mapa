@@ -118,9 +118,9 @@
     <!-- <img src="https://tinyurl.com/ycqytlw7" alt=""> -->
     <div class="myheader">
         <!-- <div class="mnav"> -->
-            <a href="/#mapid"><button class="btn btn-primary">Mapa</button></a>
-            <a href="/#app"><button class="btn btn-primary">Miejsca</button></a>
-            <a href="/#galeria" v-if="activepointindex"><button class="btn btn-primary">Galeria</button></a>
+        <a href="/#mapid"><button class="btn btn-primary">Mapa</button></a>
+        <a href="/#app"><button class="btn btn-primary">Miejsca</button></a>
+        <a href="/#galeria" v-if="activepointindex"><button class="btn btn-primary">Galeria</button></a>
 
         <!-- </div> -->
 
@@ -138,9 +138,11 @@
                     <a href="/#galeria" v-if="activepointindex"><button class="btn btn-primary">Galeria</button></a>
 
                 </div> -->
-                <p><b>Twoje punkty:</b></p>
+                <p><b>Twoje punkty:</b> <span style="cursor:pointer;color:#007bff"
+                        @click="showP = !showP">(Pokaż)</span> <span style="cursor:pointer;color:#007bff" href=""
+                        @click="deleteMode = !deleteMode">(Edytuj)</span></p>
 
-                <table style="margin-bottom:20px">
+                <table style="margin-bottom:20px" v-if="showP">
                     <thead>
                         <td>x</td>
                         <td>y</td>
@@ -166,6 +168,7 @@
 
                 <p style="clear:both"></p>
 
+                <h1>{{activepointindex}}</h1>
                 <div v-if="Object.keys(activePoint).length">
                     <p style="font-weight:bold">Dodaj zdjęcie do miejsca</p>
                     <input type="text" v-model="phototoadd">
@@ -175,18 +178,23 @@
                 <div id="galeria" style="display:flex;align-items:center;flex-wrap:wrap" id="galeria">
                     <div v-for="(elem,index) in activePoint.photos"
                         style="width:300px;padding:10px;border:1px #999 solid;margin:5px;display:flex;align-items:center">
-                        <a :href="elem" target="_blank" style="display:flex"> <img style="max-height:200px" :src="elem" alt="tu będzie obrazek"
-                                class="img-fluid"></a>
+                        <a :href="elem" target="_blank" style="display:flex"> <img style="max-height:200px" :src="elem"
+                                alt="tu będzie obrazek" class="img-fluid"></a>
                         <button @click="removePhoto(index)" class="btn-sm btn-danger" v-if="deleteMode">x</button>
                     </div>
 
                 </div>
-
-                <button id="kolko" @click="deleteMode=!deleteMode"></button>
+                <span style="cursor:pointer;color:#007bff" href="" @click="deleteMode = !deleteMode">(Edytuj)</span>
             </div>
 
         </div>
-
+        <div>
+            <p>To do:</p>
+            <ul>
+                <li>navbar mobile</li>
+                <li>wybór miasta z listy</li>
+            </ul>
+        </div>
     </div>
 
 
@@ -198,67 +206,57 @@
 
     <script>
         var mymap = L.map('mapid').setView([52, 19.4], 6);
+   
+
+        function generateMap() {
+            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                maxZoom: 18,
+                id: 'mapbox/streets-v11',
+                tileSize: 512,
+                zoomOffset: -1,
+                accessToken: 'pk.eyJ1Ijoia29yZGl4IiwiYSI6ImNrNXM3YnN6cDBqZmozb211eGwxNjhzZGQifQ.UNDwB32m1pAfiBVBrkW4Qg'
+            }).addTo(mymap);
+
+        }
+
+        generateMap();
 
 
-
-
-
-        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 18,
-            id: 'mapbox/streets-v11',
-            tileSize: 512,
-            zoomOffset: -1,
-            accessToken: 'pk.eyJ1Ijoia29yZGl4IiwiYSI6ImNrNXM3YnN6cDBqZmozb211eGwxNjhzZGQifQ.UNDwB32m1pAfiBVBrkW4Qg'
-        }).addTo(mymap);
-
-
-       // mymap.on('click', onMapClick);
-
-        // let markerobject = L.marker([52, 22])
-
-        // markerobject.addTo(mymap);
-
-        // markerobject.index = 'dupa';
-
-        // markerobject.on('click', function(){
-        //     console.log('click');
-        // })
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js"></script>
 
     <script>
+        Vue.config.productionTip = false;
         let app = new Vue({
             el: '#app',
+            config:{
+                productionTip:false
+            },
             data: {
                 cruddata: { x: 0, y: 0 },
                 phototoadd: null,
                 points: [],
                 activepointindex: null,
                 pointsObjects: [],
-                deleteMode: false
+                deleteMode: false,
+                showP: false
             },
             async mounted() {
-                //await  this.getData();
+                // await  this.getData();
                 this.getData()
                 mymap.on('click', this.onMapClick);
 
             },
             methods: {
                 onMapClick(e) {
-
-                    console.log(e.latlng.lat);
                     this.cruddata.x = e.latlng.lat;
                     this.cruddata.y = e.latlng.lng;
 
 
                     alert("You clicked the map at " + e.latlng);
-                },
-                test() {
-                    console.log('sadffddsf');
-
                 },
                 myParse() {
                     const json = '{"result":true, "count":42}';
@@ -266,17 +264,32 @@
                 },
                 async getData() {
                     let self = this;
-                    await fetch('/api/read.php').then((res) => res.json()).then((res) => { self.points = res; console.log(res) })
+                    await fetch('/api/read.php').then((res) => res.json()).then((res) => { self.points = res})
                     this.drawPoints();
                 },
                 drawPoints() {
                     let self = this;
+                    mymap.eachLayer((layer) => {
+                        layer.remove();
+                    });
+                    generateMap();
+
                     for (let point of this.points) {
+                        if (point.index == this.activepointindex) {
+                            L.Icon.Default.prototype.options.iconSize = [45, 61];
+                            L.Icon.Default.prototype.options.iconAnchor = [22, 61];
+
+                        } else {
+                            L.Icon.Default.prototype.options.iconSize = [25, 41];
+                            L.Icon.Default.prototype.options.iconAnchor = [12, 41];
+
+                        }
                         let objectl = L.marker([point.x, point.y]).addTo(mymap);
                         objectl.index = point.index;
 
                         objectl.on('click', function () {
                             app.activepointindex = objectl.index
+                            self.drawPoints();
 
                             //    alert(objectl.index)
 
