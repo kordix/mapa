@@ -27,11 +27,15 @@
   define('SITE_ROOT', realpath(dirname(__FILE__)));
 
 
-  include('dir.php');
+  require_once('dir.php');
   $nazwapliku = $_GET['nazwapliku'];
   $rozszerzenie = strtolower(pathinfo($_FILES["fileToUpload"]["name"], PATHINFO_EXTENSION));
 
   $target_file = $target_dir . basename($nazwapliku.'.'.$rozszerzenie);
+
+
+  echo $target_file;
+
   $uploadOk = 1;
   $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 

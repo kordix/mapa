@@ -174,7 +174,7 @@
 
                     <!-- <button @click="addPhoto">Dodaj dupa</button> -->
 
-                    <form :action="'api/upload.php?nazwapliku='+activepointindex+ (photoNumber - 1)" method="post" enctype="multipart/form-data">
+                    <form :action="'api/upload.php?nazwapliku='+activepointindex+ (photoNumber)" method="post" enctype="multipart/form-data">
                         Wybierz plik z dysku:
                         <input type="file" name="fileToUpload" id="fileToUpload">
                         <input type="submit" value="Upload" name="submit" @click="addPhoto()">
@@ -387,7 +387,7 @@
                 },
                 photoNumber(){
                     if(this.activePoint.photos){
-                        return this.activePoint.photos.length+1;
+                        return this.activePoint.photos.length;
                     }else{
                         return 1;
                     }
