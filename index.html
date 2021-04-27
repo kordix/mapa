@@ -171,8 +171,19 @@
                 <h1>{{activepointindex}}</h1>
                 <div v-if="Object.keys(activePoint).length">
                     <p style="font-weight:bold">Dodaj zdjęcie do miejsca</p>
+
+                    <!-- <button @click="addPhoto">Dodaj dupa</button> -->
+
+                    <form :action="'api/upload.php?nazwapliku='+activepointindex+ (photoNumber - 1)" method="post" enctype="multipart/form-data">
+                        Wybierz plik z dysku:
+                        <input type="file" name="fileToUpload" id="fileToUpload">
+                        <input type="submit" value="Upload" name="submit" @click="addPhoto()">
+                  
+                      </form>
+
+                    <p><b>Link:</b></p>
                     <input type="text" v-model="phototoadd">
-                    <button @click="addPhoto">Zatwierdź</button>
+                    <button @click="addPhoto('manual')">Zatwierdź</button>
                 </div>
 
                 <div id="galeria" style="display:flex;align-items:center;flex-wrap:wrap" id="galeria">
@@ -191,8 +202,9 @@
         <div>
             <p>To do:</p>
             <ul>
-                <li>navbar mobile</li>
-                <li>wybór miasta z listy</li>
+                <li>upload bezpośredni</li>
+                <li>geolokacja</li>
+
             </ul>
         </div>
     </div>
@@ -206,7 +218,7 @@
 
     <script>
         var mymap = L.map('mapid').setView([52, 19.4], 6);
-   
+
 
         function generateMap() {
             L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -232,8 +244,8 @@
         Vue.config.productionTip = false;
         let app = new Vue({
             el: '#app',
-            config:{
-                productionTip:false
+            config: {
+                productionTip: false
             },
             data: {
                 cruddata: { x: 0, y: 0 },
@@ -264,7 +276,7 @@
                 },
                 async getData() {
                     let self = this;
-                    await fetch('/api/read.php').then((res) => res.json()).then((res) => { self.points = res})
+                    await fetch('/api/read.php').then((res) => res.json()).then((res) => { self.points = res })
                     this.drawPoints();
                 },
                 drawPoints() {
@@ -274,25 +286,61 @@
                     });
                     generateMap();
 
+
+
                     for (let point of this.points) {
+
+                        let rediconsets = {
+                            iconUrl: 'redmarker.webp',
+                            // shadowUrl: 'leaf-shadow.png',
+
+                            iconSize: [38, 38], // size of the icon
+                            shadowSize: [50, 64], // size of the shadow
+                            iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
+                            shadowAnchor: [4, 62],  // the same for the shadow
+                            popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
+                        }
+
+             
+
+                        
+                        
                         if (point.index == this.activepointindex) {
                             L.Icon.Default.prototype.options.iconSize = [45, 61];
                             L.Icon.Default.prototype.options.iconAnchor = [22, 61];
-
+                            rediconsets.iconSize = [50, 50];
+                            rediconsets.iconAnchor = [50,50];
+                            
                         } else {
                             L.Icon.Default.prototype.options.iconSize = [25, 41];
                             L.Icon.Default.prototype.options.iconAnchor = [12, 41];
+                            rediconsets.iconSize = [40, 40];
+                            rediconsets.iconAnchor = [44,40];
+                            
+                        }
+
+                        var redmarkerIcon = L.icon(rediconsets);
+                        
+                        // let redmarker = L.marker([point.x, point.y], { icon: redmarkerIcon });
+
+
+                        let objectl = {}
+
+                        if (!point.photos) {
+                            objectl = L.marker([point.x, point.y]);
+                        } else {
+                            objectl = L.marker([point.x, point.y],{icon:redmarkerIcon} );
 
                         }
-                        let objectl = L.marker([point.x, point.y]).addTo(mymap);
+
+                        objectl.addTo(mymap)
+
+
                         objectl.index = point.index;
 
                         objectl.on('click', function () {
                             app.activepointindex = objectl.index
                             self.drawPoints();
-
-                            //    alert(objectl.index)
-
                         })
 
                         //this.pointsObjects.push(objectl);
@@ -305,16 +353,20 @@
                 },
                 removePhoto(index) {
                     this.points.find((el) => el.index == this.activepointindex).photos.splice(index, 1);
+                    this.save();
                 },
-                addPhoto() {
+                addPhoto(mode) {
                     let activePoint = this.points.find((el) => el.index == this.activepointindex);
 
                     if (!activePoint.photos) {
                         activePoint.photos = []
                     }
-
-                    this.points.find((el) => el.index == this.activepointindex).photos.push(this.phototoadd);
-                    this.save();
+                   
+                    
+                    let photoadd = '/uploads/'+this.activePoint.index + this.photoNumber +'.jpg';
+                  
+                    this.points.find((el) => el.index == this.activepointindex).photos.push(photoadd);
+                    this.save()
                 },
                 async save() {
                     let points = JSON.stringify(this.points);
@@ -332,6 +384,13 @@
                 activePoint() {
                     let objectl = this.points.find((el) => el.index == this.activepointindex);
                     return objectl ? objectl : {};
+                },
+                photoNumber(){
+                    if(this.activePoint.photos){
+                        return this.activePoint.photos.length+1;
+                    }else{
+                        return 1;
+                    }
                 }
             }
 
