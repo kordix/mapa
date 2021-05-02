@@ -174,12 +174,15 @@
 
                     <!-- <button @click="addPhoto">Dodaj dupa</button> -->
 
-                    <form :action="'api/upload.php?nazwapliku='+activepointindex+ (photoNumber)" method="post" enctype="multipart/form-data">
+                    <form id="uploadform" :action="'api/upload.php?nazwapliku='+activepointindex+ (photoNumber)"
+                        method="post" enctype="multipart/form-data">
                         Wybierz plik z dysku:
                         <input type="file" name="fileToUpload" id="fileToUpload">
-                        <input type="submit" value="Upload" name="submit" @click="addPhoto()">
-                  
-                      </form>
+                        <!-- <input type="submit" value="Upload" name="submit" @click="addPhoto()"> -->
+
+                    </form>
+
+                    <button @click="submitupload">Wyślij</button>
 
                     <p><b>Link:</b></p>
                     <input type="text" v-model="phototoadd">
@@ -301,26 +304,26 @@
                             popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
                         }
 
-             
 
-                        
-                        
+
+
+
                         if (point.index == this.activepointindex) {
                             L.Icon.Default.prototype.options.iconSize = [45, 61];
                             L.Icon.Default.prototype.options.iconAnchor = [45, 61];
                             rediconsets.iconSize = [50, 50];
-                            rediconsets.iconAnchor = [25,50];
-                            
+                            rediconsets.iconAnchor = [25, 50];
+
                         } else {
                             L.Icon.Default.prototype.options.iconSize = [25, 41];
                             L.Icon.Default.prototype.options.iconAnchor = [12, 41];
                             rediconsets.iconSize = [40, 40];
-                            rediconsets.iconAnchor = [20,40];
-                            
+                            rediconsets.iconAnchor = [20, 40];
+
                         }
 
                         var redmarkerIcon = L.icon(rediconsets);
-                        
+
                         // let redmarker = L.marker([point.x, point.y], { icon: redmarkerIcon });
 
 
@@ -329,7 +332,7 @@
                         if (!point.photos) {
                             objectl = L.marker([point.x, point.y]);
                         } else {
-                            objectl = L.marker([point.x, point.y],{icon:redmarkerIcon} );
+                            objectl = L.marker([point.x, point.y], { icon: redmarkerIcon });
 
                         }
 
@@ -361,10 +364,10 @@
                     if (!activePoint.photos) {
                         activePoint.photos = []
                     }
-                   
-                    
-                    let photoadd = '/uploads/'+this.activePoint.index + this.photoNumber +'.jpg';
-                  
+
+
+                    let photoadd = '/uploads/' + this.activePoint.index + this.photoNumber + '.jpg';
+
                     this.points.find((el) => el.index == this.activepointindex).photos.push(photoadd);
                     this.save()
                 },
@@ -378,6 +381,34 @@
                 },
                 remove(index) {
                     this.points.splice(index, 1)
+                },
+                submitupload() {
+                    let nextphoto = 999;
+
+                    let activePoint = this.points.find((el) => el.index == this.activepointindex);
+
+                    if (!activePoint.photos) {
+                        activePoint.photos = []
+                    }
+
+
+                    if (this.activePoint.photos) {
+                        if (this.activePoint.photos.length == 0) {
+                            nextphoto = 1
+                        } else {
+                            nextphoto = this.activePoint.photos.length + 1;
+                        }
+                    } else {
+                        nextphoto = 1;
+                    }
+
+                    let photoadd = '/uploads/' + this.activePoint.index + nextphoto + '.jpg';
+
+                    this.points.find((el) => el.index == this.activepointindex).photos.push(photoadd);
+                    this.save()
+
+                    document.getElementById("uploadform").action = 'api/upload.php?nazwapliku=' + this.activepointindex + nextphoto;
+                    document.getElementById("uploadform").submit();
                 }
             },
             computed: {
@@ -385,11 +416,15 @@
                     let objectl = this.points.find((el) => el.index == this.activepointindex);
                     return objectl ? objectl : {};
                 },
-                photoNumber(){
-                    if(this.activePoint.photos){
-                        return this.activePoint.photos.length;
-                    }else{
-                        return 1;
+                photoNumber() {
+                    if (this.activePoint.photos) {
+                        if (this.activePoint.photos.length == 0) {
+                            return 0
+                        } else {
+                            return this.activePoint.photos.length;
+                        }
+                    } else {
+                        return 0;
                     }
                 }
             }
