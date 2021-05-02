@@ -274,7 +274,7 @@
                     } else {
                         x.innerHTML = "Geolocation is not supported by this browser.";
                     }
-                }   
+                }
 
                 function showPosition(position) {
                     x.innerHTML = "Latitude: " + position.coords.latitude +
@@ -285,12 +285,19 @@
 
                 }
 
-                getLocation();
+                fetch('https://ipgeolocation.abstractapi.com/v1/?api_key=ad53f7ad623c43eebcf668dd61527f7a').then((res) => res.json()).then((res) => {
+                    self.cruddata.x = res.latitude;
+                    self.cruddata.y = res.longitude;
+
+                })
+
+
+                // getLocation();
                 // showPosition();
 
             },
             methods: {
-                getLocation(){
+                getLocation() {
 
                 },
                 onMapClick(e) {
