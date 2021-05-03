@@ -5,12 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAPY</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+        integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
         integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
         crossorigin="" />
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    </script>
+
 
 
     <style>
@@ -176,13 +179,13 @@
 
                     <!-- <button @click="addPhoto">Dodaj dupa</button> -->
 
-                    <form id="uploadform" :action="'api/upload.php?nazwapliku='+activepointindex+ (photoNumber)"
-                        method="post" enctype="multipart/form-data">
+                    <!-- <form id="uploadform" :action="'api/upload.php?nazwapliku='+activepointindex+ (photoNumber)" -->
+                        <!-- method="post" enctype="multipart/form-data"> -->
                         Wybierz plik z dysku:
                         <input type="file" name="fileToUpload" id="fileToUpload">
                         <!-- <input type="submit" value="Upload" name="submit" @click="addPhoto()"> -->
 
-                    </form>
+                    <!-- </form> -->
 
                     <button @click="submitupload">Wyślij</button>
 
@@ -207,7 +210,9 @@
         <div>
             <p>To do:</p>
             <ul>
-                <li>upload fetch</li>
+                <li>response z upload2.php</li>
+                <li>za duży plik info</li>
+                <li>ładniejszy navbar, material design</li>
             </ul>
         </div>
     </div>
@@ -342,7 +347,7 @@
 
                         if (point.index == this.activepointindex) {
                             L.Icon.Default.prototype.options.iconSize = [45, 61];
-                            L.Icon.Default.prototype.options.iconAnchor = [45, 61];
+                            L.Icon.Default.prototype.options.iconAnchor = [20, 61];
                             rediconsets.iconSize = [50, 50];
                             rediconsets.iconAnchor = [25, 50];
 
@@ -417,7 +422,7 @@
                 remove(index) {
                     this.points.splice(index, 1)
                 },
-                submitupload() {
+                async submitupload() {
                     let nextphoto = 999;
 
                     let activePoint = this.points.find((el) => el.index == this.activepointindex);
@@ -440,10 +445,27 @@
                     let photoadd = '/uploads/' + this.activePoint.index + nextphoto + '.jpg';
 
                     this.points.find((el) => el.index == this.activepointindex).photos.push(photoadd);
-                    this.save()
+                    this.save();
 
-                    document.getElementById("uploadform").action = 'api/upload.php?nazwapliku=' + this.activepointindex + nextphoto;
-                    document.getElementById("uploadform").submit();
+                    // document.getElementById("uploadform").action = 'api/upload.php?nazwapliku=' + this.activepointindex + nextphoto;
+                    // document.getElementById("uploadform").submit();
+
+                    const avatar = document.querySelector('#fileToUpload');
+                    const formData = new FormData();
+                    formData.append('image', avatar.files[0]);
+                    try {
+                        const response = await fetch('api/upload2.php?nazwapliku='+this.activepointindex+nextphoto, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const result = await response.json();
+                        console.log(result);
+                    } catch (e) {
+                        console.log(e);
+
+                    }
+
+                    // axios.post('api/upload.php?nazwapliku=' + this.activepointindex + nextphoto)
                 }
             },
             computed: {
