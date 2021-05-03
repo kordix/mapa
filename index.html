@@ -207,9 +207,7 @@
         <div>
             <p>To do:</p>
             <ul>
-                <li>upload bezpośredni</li>
-                <li>geolokacja</li>
-
+                <li>upload fetch</li>
             </ul>
         </div>
     </div>
@@ -286,8 +284,8 @@
                 }
 
                 // fetch('https://ipgeolocation.abstractapi.com/v1/?api_key=ad53f7ad623c43eebcf668dd61527f7a').then((res) => res.json()).then((res) => {
-                    // self.cruddata.x = res.latitude;
-                    // self.cruddata.y = res.longitude;
+                // self.cruddata.x = res.latitude;
+                // self.cruddata.y = res.longitude;
 
                 // })
 
@@ -387,6 +385,9 @@
                 add() {
                     this.points.push(this.cruddata);
                     this.save();
+
+                    app.activepointindex = this.points[this.points.length - 1].index;
+                    self.drawPoints();
                 },
                 removePhoto(index) {
                     this.points.find((el) => el.index == this.activepointindex).photos.splice(index, 1);

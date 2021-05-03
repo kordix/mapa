@@ -27,6 +27,9 @@
   define('SITE_ROOT', realpath(dirname(__FILE__)));
 
 
+  phpinfo();
+
+
   require_once('dir.php');
   $nazwapliku = $_GET['nazwapliku'];
   $rozszerzenie = strtolower(pathinfo($_FILES["fileToUpload"]["name"], PATHINFO_EXTENSION));
