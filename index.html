@@ -169,7 +169,7 @@
                 <label for="">kod miejsca</label>
                 <input type="text" style="width:80px" v-model="cruddata.index">
                 <button @click="add">Dodaj</button>
-                <button @click="save">Zapisz</button>
+                <!-- <button @click="save">Zapisz</button> -->
 
                 <p style="clear:both"></p>
 
@@ -180,18 +180,19 @@
                     <!-- <button @click="addPhoto">Dodaj dupa</button> -->
 
                     <!-- <form id="uploadform" :action="'api/upload.php?nazwapliku='+activepointindex+ (photoNumber)" -->
-                        <!-- method="post" enctype="multipart/form-data"> -->
-                        Wybierz plik z dysku:
-                        <input type="file" name="fileToUpload" id="fileToUpload">
-                        <!-- <input type="submit" value="Upload" name="submit" @click="addPhoto()"> -->
+                    <!-- method="post" enctype="multipart/form-data"> -->
+                    Wybierz plik z dysku:
+                    <input type="file" name="fileToUpload" id="fileToUpload">
+                    <!-- <input type="submit" value="Upload" name="submit" @click="addPhoto()"> -->
 
                     <!-- </form> -->
 
                     <button @click="submitupload">Wyślij</button>
 
-                    <!-- <p><b>Link:</b></p>
-                    <input type="text" v-model="phototoadd">
-                    <button @click="addPhoto('manual')">Zatwierdź</button> -->
+                    <p><b>LUB podaj link:</b>
+                        <input type="text" v-model="phototoadd">
+                        <button @click="addPhoto('manual')">Zatwierdź</button>
+                    </p>
                 </div>
 
                 <div id="galeria" style="display:flex;align-items:center;flex-wrap:wrap" id="galeria">
@@ -205,7 +206,7 @@
                 </div>
                 <span style="cursor:pointer;color:#007bff" href="" @click="deleteMode = !deleteMode">(Edytuj)</span>
                 <br><br>
-                <span style="cursor:pointer;color:#007bff" href="" @click="activepointindex = null">zamknij</span>
+                <span style="cursor:pointer;color:#007bff" href="" v-if="activepointindex" @click="activepointindex = null">zamknij</span>
 
             </div>
 
@@ -386,10 +387,10 @@
 
                         objectl.on('click', function () {
                             app.activepointindex = objectl.index
-                            localStorage.setItem("lactivepoint", app.activepointindex );
+                            localStorage.setItem("lactivepoint", app.activepointindex);
 
                             console.log(localStorage.getItem("lactivepoint"));
-                            
+
                             self.drawPoints();
                         })
 
@@ -409,17 +410,28 @@
                     this.save();
                 },
                 addPhoto(mode) {
-                    let activePoint = this.points.find((el) => el.index == this.activepointindex);
+                 
 
-                    if (!activePoint.photos) {
-                        activePoint.photos = []
-                    }
+                        let activePoint = this.points.find((el) => el.index == this.activepointindex);
+
+                        if (!activePoint.photos) {
+                            activePoint.photos = []
+                        }
+
+                        
+                        let photoadd = '/uploads/' + this.activePoint.index + this.photoNumber + '.jpg';
+
+                        if (mode == 'manual') {
+                            photoadd = this.phototoadd;
+                        }
+                        this.points.find((el) => el.index == this.activepointindex).photos.push(photoadd);
+                        this.save()
+
+                        this.photoadd = '';
 
 
-                    let photoadd = '/uploads/' + this.activePoint.index + this.photoNumber + '.jpg';
 
-                    this.points.find((el) => el.index == this.activepointindex).photos.push(photoadd);
-                    this.save()
+                  
                 },
                 async save() {
                     let points = JSON.stringify(this.points);
@@ -464,7 +476,7 @@
                     const formData = new FormData();
                     formData.append('image', avatar.files[0]);
                     try {
-                        const response = await fetch('api/upload2.php?nazwapliku='+this.activepointindex+nextphoto, {
+                        const response = await fetch('api/upload2.php?nazwapliku=' + this.activepointindex + nextphoto, {
                             method: 'POST',
                             body: formData
                         });
