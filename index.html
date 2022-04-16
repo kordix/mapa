@@ -292,7 +292,10 @@
 
                 }
 
-                // this.activepointindex = localStorage.getItem("lactivepoint");
+                if(localStorage.getItem("lactivepoint")){
+                this.activepointindex = localStorage.getItem("lactivepoint");
+                localStorage.setItem("lactivepoint",'');
+                }
 
 
                 // fetch('https://ipgeolocation.abstractapi.com/v1/?api_key=ad53f7ad623c43eebcf668dd61527f7a').then((res) => res.json()).then((res) => {
@@ -387,10 +390,6 @@
 
                         objectl.on('click', function () {
                             app.activepointindex = objectl.index
-                            localStorage.setItem("lactivepoint", app.activepointindex);
-
-                            console.log(localStorage.getItem("lactivepoint"));
-
                             self.drawPoints();
                         })
 
@@ -426,6 +425,10 @@
                         }
                         this.points.find((el) => el.index == this.activepointindex).photos.push(photoadd);
                         this.save()
+
+                        localStorage.setItem("lacitvepoint", this.activepointindex);
+
+                        // location.reload();
 
                         this.photoadd = '';
 
