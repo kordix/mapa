@@ -5,19 +5,40 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
     <title>Document</title>
 </head>
 
 <body>
 
+    <div id="app">{{dane}}</div>
+
+    <script>
+
+        let app = new Vue({
+            el: '#app',
+            data: {
+                dane: {}
+            },
+            mounted() {
+                let self = this;
+                fetch('https://ipgeolocation.abstractapi.com/v1/?api_key=ad53f7ad623c43eebcf668dd61527f7a').then((res) => res.json()).then((res) => {
+                    self.dane = res;
+                })
+
+            }
+        })
+
+
+    </script>
+
 
     <script>
 
         // const axios = require('axios');
-        fetch('https://ipgeolocation.abstractapi.com/v1/?api_key=ad53f7ad623c43eebcf668dd61527f7a').then((res)=>res.json()).then((res)=>{
-            console.log(res);
-        })
-            
+
+
     </script>
 </body>
 

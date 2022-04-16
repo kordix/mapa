@@ -189,9 +189,9 @@
 
                     <button @click="submitupload">Wyślij</button>
 
-                    <p><b>Link:</b></p>
+                    <!-- <p><b>Link:</b></p>
                     <input type="text" v-model="phototoadd">
-                    <button @click="addPhoto('manual')">Zatwierdź</button>
+                    <button @click="addPhoto('manual')">Zatwierdź</button> -->
                 </div>
 
                 <div id="galeria" style="display:flex;align-items:center;flex-wrap:wrap" id="galeria">
@@ -204,6 +204,9 @@
 
                 </div>
                 <span style="cursor:pointer;color:#007bff" href="" @click="deleteMode = !deleteMode">(Edytuj)</span>
+                <br><br>
+                <span style="cursor:pointer;color:#007bff" href="" @click="activepointindex = null">zamknij</span>
+
             </div>
 
         </div>
@@ -287,6 +290,9 @@
                     self.cruddata.y = position.coords.longitude;
 
                 }
+
+                // this.activepointindex = localStorage.getItem("lactivepoint");
+
 
                 // fetch('https://ipgeolocation.abstractapi.com/v1/?api_key=ad53f7ad623c43eebcf668dd61527f7a').then((res) => res.json()).then((res) => {
                 // self.cruddata.x = res.latitude;
@@ -380,6 +386,10 @@
 
                         objectl.on('click', function () {
                             app.activepointindex = objectl.index
+                            localStorage.setItem("lactivepoint", app.activepointindex );
+
+                            console.log(localStorage.getItem("lactivepoint"));
+                            
                             self.drawPoints();
                         })
 
