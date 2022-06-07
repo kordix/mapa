@@ -80,6 +80,7 @@
         }
 
         .myheader {
+            padding-top: 5px;
             position: fixed;
             right: 0;
             left: 0;
@@ -91,8 +92,15 @@
             z-index: 999;
             animation-name: fadeInDown;
             animation-duration: 0.25s;
-            height: 50px;
-            border: 1px red solid;
+            /* height: 50px; */
+            /* border: 1px red solid; */
+        }
+
+        @media(min-width:800px) {
+
+            .myheader {
+                display: none;
+            }
         }
 
         @media(min-width:800px) {
@@ -117,110 +125,92 @@
 </head>
 
 <body>
+    <div>
+        <div class="myheader container">
+            <a href="/#mapid"><button class="btn btn-primary">Mapa</button></a>
+            <a href="/#app"><button class="btn btn-primary">Miejsca</button></a>
+            <a v-if="activepointindex" href="/#galeria" id="galeriabutton" style="display:none"><button class="btn btn-success">Galeria</button></a>
+        </div>
+        <div style="margin-top:50px;"></div>
+        <div class="container" style="max-width:1500px;margin-top:30px">
+            <div class="row">
+                <div id="mapid" style="width:600px;height:600px;margin-right:20px" class="col-lg-5"></div>
+                <div class="col-lg-6" id="app">
 
-    <!-- <img src="https://tinyurl.com/ycqytlw7" alt=""> -->
-    <div class="myheader">
-        <!-- <div class="mnav"> -->
-        <a href="/#mapid"><button class="btn btn-primary">Mapa</button></a>
-        <a href="/#app"><button class="btn btn-primary">Miejsca</button></a>
-        <a href="/#galeria" v-if="activepointindex"><button class="btn btn-primary">Galeria</button></a>
-
-        <!-- </div> -->
 
 
-    </div>
-    <div style="margin-top:50px;"></div>
-    <div class="container" style="max-width:1500px">
-        <div class="row">
-            <div id="mapid" style="width:600px;height:600px;margin-right:20px" class="col-lg-5"></div>
-            <div id="app" class="col-lg-6">
+                    <p><b>Twoje punkty:</b> <span style="cursor:pointer;color:#007bff"
+                            @click="showP = !showP">(Pokaż)</span> <span style="cursor:pointer;color:#007bff" href=""
+                            @click="deleteMode = !deleteMode" v-if="showP">(Edytuj)</span></p>
 
-                <!-- <div class="mnav2">
-                    <a href="/#mapid"><button class="btn btn-primary">Mapa</button></a>
-                    <a href="/#app"><button class="btn btn-primary">Miejsca</button></a>
-                    <a href="/#galeria" v-if="activepointindex"><button class="btn btn-primary">Galeria</button></a>
+                    <table style="margin-bottom:20px" v-if="showP">
+                        <thead>
+                            <td>x</td>
+                            <td>y</td>
+                            <td>index</td>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(elem,index) in points" :class="{active:elem.index == activepointindex}">
+                                <td>{{Math.round(elem.x*100)/100}}</td>
+                                <td>{{Math.round(elem.y*100)/100}}</td>
+                                <td>{{elem.index}}</td>
+                                <td> <button @click="remove(index)" class="btn btn-sm btn-danger"
+                                        v-if="deleteMode">Usuń</button> </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <label for="">x</label>
+                    <input type="text" style="width:50px" v-model="cruddata.x">
+                    <label for="">y</label>
+                    <input type="text" style="width:50px" v-model="cruddata.y">
+                    <label for="">kod miejsca</label>
+                    <input type="text" style="width:80px" v-model="cruddata.index">
+                    <button @click="add" class="btn btn-success">Dodaj</button>
+                    <!-- <button @click="save">Zapisz</button> -->
 
-                </div> -->
-                <div id="demo"></div>
+                    <p style="clear:both"></p>
 
-                <p><b>Twoje punkty:</b> <span style="cursor:pointer;color:#007bff"
-                        @click="showP = !showP">(Pokaż)</span> <span style="cursor:pointer;color:#007bff" href=""
-                        @click="deleteMode = !deleteMode">(Edytuj)</span></p>
+                    <h1>{{activepointindex}}</h1>
+                    <div v-if="Object.keys(activePoint).length">
+                        <p style="font-weight:bold">Dodaj zdjęcie do miejsca</p>
 
-                <table style="margin-bottom:20px" v-if="showP">
-                    <thead>
-                        <td>x</td>
-                        <td>y</td>
-                        <td>index</td>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(elem,index) in points" :class="{active:elem.index == activepointindex}">
-                            <td>{{Math.round(elem.x*100)/100}}</td>
-                            <td>{{Math.round(elem.y*100)/100}}</td>
-                            <td>{{elem.index}}</td>
-                            <td> <button @click="remove(index)" v-if="deleteMode">Usuń</button> </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <label for="">x</label>
-                <input type="text" style="width:50px" v-model="cruddata.x">
-                <label for="">y</label>
-                <input type="text" style="width:50px" v-model="cruddata.y">
-                <label for="">kod miejsca</label>
-                <input type="text" style="width:80px" v-model="cruddata.index">
-                <button @click="add">Dodaj</button>
-                <!-- <button @click="save">Zapisz</button> -->
+                        <!-- <button @click="addPhoto">Dodaj dupa</button> -->
 
-                <p style="clear:both"></p>
+                        <!-- <form id="uploadform" :action="'api/upload.php?nazwapliku='+activepointindex+ (photoNumber)" -->
+                        <!-- method="post" enctype="multipart/form-data"> -->
+                        Wybierz plik z dysku:
+                        <input type="file" name="fileToUpload" id="fileToUpload">
+                        <!-- <input type="submit" value="Upload" name="submit" @click="addPhoto()"> -->
 
-                <h1>{{activepointindex}}</h1>
-                <div v-if="Object.keys(activePoint).length">
-                    <p style="font-weight:bold">Dodaj zdjęcie do miejsca</p>
+                        <!-- </form> -->
 
-                    <!-- <button @click="addPhoto">Dodaj dupa</button> -->
+                        <button @click="submitupload">Wyślij</button>
 
-                    <!-- <form id="uploadform" :action="'api/upload.php?nazwapliku='+activepointindex+ (photoNumber)" -->
-                    <!-- method="post" enctype="multipart/form-data"> -->
-                    Wybierz plik z dysku:
-                    <input type="file" name="fileToUpload" id="fileToUpload">
-                    <!-- <input type="submit" value="Upload" name="submit" @click="addPhoto()"> -->
-
-                    <!-- </form> -->
-
-                    <button @click="submitupload">Wyślij</button>
-
-                    <p><b>LUB podaj link:</b>
-                        <input type="text" v-model="phototoadd">
-                        <button @click="addPhoto('manual')">Zatwierdź</button>
-                    </p>
-                </div>
-
-                <div id="galeria" style="display:flex;align-items:center;flex-wrap:wrap" id="galeria">
-                    <div v-for="(elem,index) in activePoint.photos"
-                        style="width:300px;padding:10px;border:1px #999 solid;margin:5px;display:flex;align-items:center">
-                        <a :href="elem" target="_blank" style="display:flex"> <img style="max-height:200px" :src="elem"
-                                alt="tu będzie obrazek" class="img-fluid"></a>
-                        <button @click="removePhoto(index)" class="btn-sm btn-danger" v-if="deleteMode">x</button>
+                        <p><b>LUB podaj link:</b>
+                            <input type="text" v-model="phototoadd">
+                            <button @click="addPhoto('manual')">Zatwierdź</button>
+                        </p>
                     </div>
 
+                    <div id="galeria" style="display:flex;align-items:center;flex-wrap:wrap" id="galeria">
+                        <div v-for="(elem,index) in activePoint.photos"
+                            style="width:300px;padding:10px;border:1px #999 solid;margin:5px;display:flex;align-items:center">
+                            <a :href="elem" target="_blank" style="display:flex"> <img style="max-height:200px"
+                                    :src="elem" alt="tu będzie obrazek" class="img-fluid"></a>
+                            <button @click="removePhoto(index)" class="btn-sm btn-danger" v-if="deleteMode">x</button>
+                        </div>
+
+                    </div>
+                    <br><br>
+                    <span style="cursor:pointer;color:#007bff" href="" v-if="activepointindex"
+                        @click="activepointindex = null">zamknij</span>
+
                 </div>
-                <span style="cursor:pointer;color:#007bff" href="" @click="deleteMode = !deleteMode">(Edytuj)</span>
-                <br><br>
-                <span style="cursor:pointer;color:#007bff" href="" v-if="activepointindex" @click="activepointindex = null">zamknij</span>
 
             </div>
 
         </div>
-        <div>
-            <p>To do:</p>
-            <ul>
-                <li>response z upload2.php</li>
-                <li>za duży plik info</li>
-                <li>ładniejszy navbar, material design</li>
-            </ul>
-        </div>
     </div>
-
 
 
 
@@ -256,6 +246,17 @@
         Vue.config.productionTip = false;
         let app = new Vue({
             el: '#app',
+            watch:{
+                activepointindex(val){
+                    if (this.points.find((el) => el.index == this.activepointindex).photos){
+                        document.getElementById("galeriabutton").style.display = 'inline-block';
+                    }else{
+                        document.getElementById("galeriabutton").style.display = 'none';
+
+                    }
+
+                }
+            },
             config: {
                 productionTip: false
             },
@@ -292,9 +293,9 @@
 
                 }
 
-                if(localStorage.getItem("lactivepoint")){
-                this.activepointindex = localStorage.getItem("lactivepoint");
-                localStorage.setItem("lactivepoint",'');
+                if (localStorage.getItem("lactivepoint")) {
+                    // this.activepointindex = localStorage.getItem("lactivepoint");
+                    // localStorage.setItem("lactivepoint",'');
                 }
 
 
@@ -409,32 +410,32 @@
                     this.save();
                 },
                 addPhoto(mode) {
-                 
-
-                        let activePoint = this.points.find((el) => el.index == this.activepointindex);
-
-                        if (!activePoint.photos) {
-                            activePoint.photos = []
-                        }
-
-                        
-                        let photoadd = '/uploads/' + this.activePoint.index + this.photoNumber + '.jpg';
-
-                        if (mode == 'manual') {
-                            photoadd = this.phototoadd;
-                        }
-                        this.points.find((el) => el.index == this.activepointindex).photos.push(photoadd);
-                        this.save()
-
-                        localStorage.setItem("lacitvepoint", this.activepointindex);
-
-                        // location.reload();
-
-                        this.photoadd = '';
 
 
+                    let activePoint = this.points.find((el) => el.index == this.activepointindex);
 
-                  
+                    if (!activePoint.photos) {
+                        activePoint.photos = []
+                    }
+
+
+                    let photoadd = '/uploads/' + this.activePoint.index + this.photoNumber + '.jpg';
+
+                    if (mode == 'manual') {
+                        photoadd = this.phototoadd;
+                    }
+                    this.points.find((el) => el.index == this.activepointindex).photos.push(photoadd);
+                    this.save()
+
+                    localStorage.setItem("lacitvepoint", this.activepointindex);
+
+                    // location.reload();
+
+                    this.photoadd = '';
+
+
+
+
                 },
                 async save() {
                     let points = JSON.stringify(this.points);
@@ -445,7 +446,9 @@
 
                 },
                 remove(index) {
-                    this.points.splice(index, 1)
+                    this.points.splice(index, 1);
+                    this.save();
+                    self.drawPoints();
                 },
                 async submitupload() {
                     let nextphoto = 999;
