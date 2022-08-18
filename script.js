@@ -62,7 +62,10 @@ function drawPoints() {
         let objectl = {}
         if (!point.photos) {
             objectl = L.marker([point.x, point.y]);
-        } else {
+        } else if (point.photos.length == 0) {
+            objectl = L.marker([point.x, point.y]);
+        } 
+        else {
             objectl = L.marker([point.x, point.y], { icon: redmarkerIcon });
 
         }
