@@ -12,6 +12,10 @@ let currentsrc = '';
 let galleryindex = 0;
 
 grid.addEventListener("click", (e) => {
+    if (e.target.nodeName == 'BUTTON'){
+        return;
+    }
+
     lightbox.classList.add("active");
     lightboxImg.src = e.target.src;
     galleryindex = parseInt(e.target.getAttribute('num'));
@@ -56,6 +60,7 @@ function generateGallery() {
         for (let i = 0; i < galleryimages.length; i++) {
             let elem = galleryimages[i];
             document.querySelector('#galeria').innerHTML += /*html*/`<img src="${elem}" class="galleryelem" num="${i}" alt="">`
+            document.querySelector('#galeria').innerHTML += /*html*/`<button onclick="removePhoto(${i})" class="btn-sm btn-danger">x</button>`
 
         }
     }

@@ -163,14 +163,19 @@ async function submitupload() {
             body: formData
         });
         const result = await response.json();
-        console.log(result);
     } catch (e) {
-        console.log(e);
 
     }
 
     generateMiejsce();
 
+}
+
+function removePhoto(index) {
+    points.find((el) => el.index == activepointindex).photos.splice(index, 1);
+    save();
+    getData();
+    generateMiejsce();
 }
 
 generateMap();
