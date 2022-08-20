@@ -3,6 +3,7 @@ let points = [];
 let activepointindex = 0;
 let activePoint = {};
 let cruddata = {};
+let lokalizacja = {}
 
 mymap.on('click', onMapClick);
 
@@ -26,14 +27,20 @@ async function getData() {
 
 function getLocation() {
     navigator.geolocation.getCurrentPosition(showPosition);
-
 }
 
 function showPosition(position) {
     document.querySelector('#inputx').value = position.coords.latitude;
     document.querySelector('#inputy').value = position.coords.longitude;
-
 }
+
+async function getLocation2(){
+    await fetch('http://ip-api.com/json/').then((res)=>res.json()).then((res)=>lokalizacja = res);
+
+    document.querySelector('#inputx').value = lokalizacja.lat;
+    document.querySelector('#inputy').value = lokalizacja.lon;
+}
+
 
 function drawPoints() {
     mymap.eachLayer((layer) => {
