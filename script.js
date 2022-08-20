@@ -1,4 +1,4 @@
-var mymap = L.map('mapid',{ zoomControl: false }).setView([52, 19.4], 6);
+var mymap = L.map('mapid', { zoomControl: false }).setView([52, 19.4], 6);
 let points = [];
 let activepointindex = 0;
 let activePoint = {};
@@ -21,6 +21,18 @@ function generateMap() {
 async function getData() {
     await fetch('/api/read.php').then((res) => res.json()).then((res) => { points = res })
     drawPoints();
+}
+
+
+function getLocation() {
+    navigator.geolocation.getCurrentPosition(showPosition);
+
+}
+
+function showPosition(position) {
+    document.querySelector('#inputx').value = position.coords.latitude;
+    document.querySelector('#inputy').value = position.coords.longitude;
+
 }
 
 function drawPoints() {
@@ -64,7 +76,7 @@ function drawPoints() {
             objectl = L.marker([point.x, point.y]);
         } else if (point.photos.length == 0) {
             objectl = L.marker([point.x, point.y]);
-        } 
+        }
         else {
             objectl = L.marker([point.x, point.y], { icon: redmarkerIcon });
 
@@ -75,7 +87,7 @@ function drawPoints() {
             activepointindex = objectl.index
             drawPoints();
             generateMiejsce();
-  
+
         })
 
 
@@ -84,32 +96,28 @@ function drawPoints() {
 
 
 function onMapClick(e) {
-    cruddata.x = e.latlng.lat;
-    cruddata.y = e.latlng.lng;
-
     document.querySelector('#inputx').value = e.latlng.lat;
     document.querySelector('#inputy').value = e.latlng.lng;
-
-
-
-    alert("You clicked the map at " + e.latlng);
+    alert("Doałeś punkt o koordynatach " + e.latlng);
 }
 
 
 
 
-function generateMiejsce(){
+function generateMiejsce() {
     activePoint = points.find((el) => el.index == activepointindex);
     document.querySelector('#activepointindex').innerHTML = activepointindex;
     document.querySelector('#miejsce').classList.remove('hide');
 
-        galleryimages = activePoint.photos;
-        generateGallery();
+    galleryimages = activePoint.photos;
+    generateGallery();
 
 }
 
 
 function add() {
+    cruddata.x = document.querySelector('#inputx').value
+    cruddata.y = document.querySelector('#inputy').value 
     cruddata.index = document.querySelector('#inputindex').value;
     points.push(cruddata);
     save();
