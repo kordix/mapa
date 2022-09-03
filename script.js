@@ -4,6 +4,7 @@ let activepointindex = 0;
 let activePoint = {};
 let cruddata = {};
 let lokalizacja = {}
+let laoding = false;
 
 mymap.on('click', onMapClick);
 
@@ -167,8 +168,7 @@ async function submitupload() {
 
     let photoadd = '/uploads/' + activePoint.index + nextphoto + '.jpg';
 
-    points.find((el) => el.index == activepointindex).photos.push(photoadd);
-    save();
+  
 
     // document.getElementById("uploadform").action = 'api/upload.php?nazwapliku=' + this.activepointindex + nextphoto;
     // document.getElementById("uploadform").submit();
@@ -176,6 +176,7 @@ async function submitupload() {
     const avatar = document.querySelector('#fileToUpload');
     const formData = new FormData();
     formData.append('image', avatar.files[0]);
+    document.querySelector('#loading').style.display = 'block';
     try {
         const response = await fetch('api/upload2.php?nazwapliku=' + activepointindex + nextphoto, {
             method: 'POST',
@@ -186,6 +187,9 @@ async function submitupload() {
 
     }
 
+    points.find((el) => el.index == activepointindex).photos.push(photoadd);
+    save();
+    document.querySelector('#loading').style.display = 'none';
     document.querySelector('#fileToUpload').value = null;
     generateMiejsce();
     
