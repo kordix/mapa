@@ -186,7 +186,9 @@ async function submitupload() {
 
     }
 
+    document.querySelector('#fileToUpload').value = null;
     generateMiejsce();
+    
 
 }
 
