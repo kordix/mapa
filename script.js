@@ -131,6 +131,7 @@ function add() {
 
     activepointindex = points[points.length - 1].index;
     self.drawPoints();
+    generateMiejsce();
 }
 
 
