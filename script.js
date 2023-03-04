@@ -196,6 +196,21 @@ async function submitupload() {
 
 }
 
+
+function addPhoto(){
+    console.log('addPhoto');
+    if (!points.find((el) => el.index == activepointindex).photos){
+        points.find((el) => el.index == activepointindex).photos = []
+    }
+
+    points.find((el) => el.index == activepointindex).photos.push(document.querySelector('#phototoadd').value );
+    save();
+    document.querySelector('#loading').style.display = 'none';
+    document.querySelector('#fileToUpload').value = null;
+    generateMiejsce();
+
+}
+
 function removePhoto(index) {
     points.find((el) => el.index == activepointindex).photos.splice(index, 1);
     save();
