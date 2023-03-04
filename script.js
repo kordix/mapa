@@ -1,4 +1,4 @@
-var mymap = L.map('mapid', { zoomControl: false }).setView([52, 19.4], 6);
+var mymap = L.map('mapid', { zoomControl: true }).setView([52, 19.4], 6);
 let points = [];
 let activepointindex = 0;
 let activePoint = {};
