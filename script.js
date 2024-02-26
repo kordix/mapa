@@ -175,10 +175,10 @@ async function submitupload() {
 
     const avatar = document.querySelector('#fileToUpload');
     const formData = new FormData();
-    formData.append('image', avatar.files[0]);
+    formData.append('fileToUpload', avatar.files[0]);
     document.querySelector('#loading').style.display = 'block';
     try {
-        const response = await fetch('api/upload2.php?nazwapliku=' + activepointindex + nextphoto, {
+        const response = await fetch('api/upload3.php?nazwapliku=' + activepointindex + nextphoto, {
             method: 'POST',
             body: formData
         });
